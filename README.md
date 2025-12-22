@@ -3,4 +3,3 @@
 Smart Wi-Fi manager for ESP32 using MicroPython.
 Auto-connect, scan, JSON storage, and AP fallback.
 
-📄 Arabic documentation: README_AR.md
