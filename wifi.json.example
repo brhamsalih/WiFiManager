@@ -1,0 +1,6 @@
+{
+  "networks": [
+    { "ssid": "MyWiFi", "password": "password123" },
+    { "ssid": "Office", "password": "12345678" }
+  ]
+}
