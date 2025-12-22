@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "description": "WiFi Manager for ESP32 using MicroPython",
   "files": [
-    "WiFiManager/wifi_manager"
+    "wifi_manager"
   ]
 }
