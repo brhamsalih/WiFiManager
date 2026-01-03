@@ -68,7 +68,7 @@ class WiFiManager():
             
             if not candidates:
                 self.do_ap()
-                return{"STATUS": "NO LAN SAIVED AROUND"}
+                return{"STATUS": "NO LAN SAVED AROUND"}
                 
                 
             for net in candidates:

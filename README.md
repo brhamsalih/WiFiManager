@@ -44,65 +44,71 @@ wifi = WiFiManager()
 # Automatic connection Start STA if faild --> AP
 
 ```bash
-wifi.do_connect()
+print(wifi.do_connect())
 ```
 
 # Start AP
 
 ```bash
-wifi.do_ap()
+print(wifi.do_ap())
 ```
 
 # Check is connecting
 
 ```bash
-wifi.is_connected()
+print(wifi.is_connected())
 ```
 
 # Check status
 
 ```bash
-wifi.status()
+print(wifi.status())
 ```
 
 # Stop AP and STA
 
 ```bash
-wifi.stop_all()
+print(wifi.stop_all())
 ```
 
 # Stop STA
 
 ```bash
-wifi.stop_sta()
+print(wifi.stop_sta())
 ```
 
 # Stop AP
 
 ```bash
-wifi.stop_ap()
+print(wifi.stop_ap())
 ```
 
 # Add Wi-Fi network
 
 ```bash
-wifi.storage.save_network("MyWiFi", "password")
+print(wifi.add_network("MyWiFi", "11223344"))
 ```
 
 # Delete one network
 
 ```bash
-wifi.storage.remove_network("Office")
+print(wifi.remove_network("Office"))
 ```
 
 # Delete all networks
 
 ```bash
-wifi.storage.clear()
+print(wifi.clear_networks())
 ```
 
 # Checking nearby networks
 
 ```bash
-networks = wifi.scanner.scan()
+print(wifi.scanner.scan())
+```
+
+# Show saved networks
+
+```bash
+print(wifi.storage.load_networks())
 ```
