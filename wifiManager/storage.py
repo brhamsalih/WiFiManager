@@ -44,3 +44,4 @@ class Storage:
     def clear(self):
         with open(self.file, "w") as f:
             ujson.dump({"networks": []}, f)
+

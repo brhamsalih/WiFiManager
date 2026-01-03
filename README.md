@@ -8,7 +8,7 @@ Auto-connect, scan, JSON storage, and AP fallback.
 - ESP32 board
 - MicroPython (v1.20 or later preferred)
 - Storage space for the configuration file (wifi.json)
-  
+
 # Installation (via Thonny)
 
 - Copy the entire wifiManager/ folder to the ESP32
@@ -16,6 +16,7 @@ Auto-connect, scan, JSON storage, and AP fallback.
 - The library is ready to use ✅
 
 # Settings file (wifi.json)
+
 ```bash
 {
   "networks": [
@@ -34,27 +35,74 @@ Auto-connect, scan, JSON storage, and AP fallback.
 - If this fails → Turn on the Access Point
 
 # Quick use
+
 ```bash
 from wifi_manager import WiFiManager
 wifi = WiFiManager()
 ```
-# Automatic connection
+
+# Automatic connection Start STA if faild --> AP
+
 ```bash
-wifi.auto_connect()
+wifi.do_connect()
 ```
-# Save Wi-Fi network
+
+# Start AP
+
+```bash
+wifi.do_ap()
+```
+
+# Check is connecting
+
+```bash
+wifi.is_connected()
+```
+
+# Check status
+
+```bash
+wifi.status()
+```
+
+# Stop AP and STA
+
+```bash
+wifi.stop_all()
+```
+
+# Stop STA
+
+```bash
+wifi.stop_sta()
+```
+
+# Stop AP
+
+```bash
+wifi.stop_ap()
+```
+
+# Add Wi-Fi network
+
 ```bash
 wifi.storage.save_network("MyWiFi", "password")
 ```
+
 # Delete one network
+
 ```bash
 wifi.storage.remove_network("Office")
 ```
+
 # Delete all networks
+
 ```bash
 wifi.storage.clear()
 ```
+
 # Checking nearby networks
+
 ```bash
 networks = wifi.scanner.scan()
 ```
