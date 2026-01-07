@@ -1,2 +1,3 @@
 from .manager import WiFiManager
-__version__ = "1.0.1"
+from .version import VERSION
+__version__ = VERSION
