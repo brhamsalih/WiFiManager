@@ -1,10 +1,9 @@
 import time
-
-import time
 import gc
 
 class WiFiScanner:
-    def __init__(self, sta):
+    def __init__(self, sta, debug=False):
+        self.debug = debug
         self.sta = sta
 
     def scan(self, min_rssi=-90):
@@ -19,9 +18,12 @@ class WiFiScanner:
             for n in scan_results:
                 time.sleep(0) 
 
-                ssid = n[0].decode()
-                rssi = n[3]
-                auth = n[4]
+                try:
+                    ssid = n[0].decode()
+                    rssi = n[3]
+                    auth = n[4]
+                except:
+                    continue
 
                 if ssid and rssi >= min_rssi:
                     nets.append({
@@ -31,7 +33,8 @@ class WiFiScanner:
                     })
 
         except Exception as e:
-            print("WiFi scan error:", e)
+            if self.debug:
+                print("WiFi scan error:", e)
 
         nets.sort(key=lambda x: x["rssi"], reverse=True)
 

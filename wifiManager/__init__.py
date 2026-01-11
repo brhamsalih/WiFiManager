@@ -1,3 +1,4 @@
 from .manager import WiFiManager
-from .version import VERSION
-__version__ = VERSION
+from .version import __version__
+
+__all__ = ["WiFiManager", "__version__"]

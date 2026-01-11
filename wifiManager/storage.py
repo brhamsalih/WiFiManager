@@ -10,7 +10,9 @@ class Storage:
             with open(self.file, "r") as f:
                 data = ujson.load(f)
             return data.get("networks", [])
-        except:
+        except OSError:
+            return []
+        except ValueError:
             return []
 
     def save_network(self, ssid, password):

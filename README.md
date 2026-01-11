@@ -9,6 +9,10 @@ Auto-connect, scan, JSON storage, and AP fallback.
 - MicroPython (v1.20 or later preferred)
 - Storage space for the configuration file (wifi.json)
 
+## Installation
+```bash
+pip install esp32-wifimanager
+
 # Installation (via Thonny)
 
 - Copy the entire wifiManager/ folder to the ESP32
@@ -37,20 +41,21 @@ Auto-connect, scan, JSON storage, and AP fallback.
 # Quick use
 
 ```bash
-from wifi_manager import WiFiManager
-wifi = WiFiManager()
+from wifiManager import WiFiManager
+
+wifi = WiFiManager(debug=True)
 ```
 
 # Automatic connection Start STA if faild --> AP
 
 ```bash
-print(wifi.do_connect())
+print(wifi.connect())
 ```
 
 # Start AP
 
 ```bash
-print(wifi.do_ap())
+print(wifi._ap())
 ```
 
 # Check is connecting
