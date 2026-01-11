@@ -10,8 +10,10 @@ Auto-connect, scan, JSON storage, and AP fallback.
 - Storage space for the configuration file (wifi.json)
 
 ## Installation
+
 ```bash
 pip install esp32-wifimanager
+```
 
 # Installation (via Thonny)
 
