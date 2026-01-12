@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "esp32-wifimanager"
+version = "1.0.2"
+description = "WiFi Manager for ESP32 running MicroPython"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+  { name = "Ibrahim Salih" }
+]
+keywords = ["micropython", "esp32", "wifi", "iot"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent"
+]
+
+[tool.setuptools]
+packages = ["wifiManager"]

@@ -1,8 +1,0 @@
-{
-  "name": "WiFiManager",
-  "version": "1.0.1",
-  "description": "WiFi Manager for ESP32 using MicroPython",
-  "files": [
-    "wifiManager"
-  ]
-}
