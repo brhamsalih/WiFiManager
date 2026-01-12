@@ -1,7 +1,22 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to this project will be documented in this file.  
 This project follows Semantic Versioning (MAJOR.MINOR.PATCH).
+
+---
+
+## [1.0.2] - 2026-01-11
+
+### Changed
+
+- Package name finalized for PyPI publication
+- Public API stabilized for first official release
+
+### Internal
+
+- Project structure aligned with PyPI standards
+- Added GitHub Actions workflow for Trusted Publisher
+- Cleanup of non-library runtime files
 
 ---
 
@@ -14,13 +29,13 @@ This project follows Semantic Versioning (MAJOR.MINOR.PATCH).
 
 ### Fixed
 
-- Fix ESP32 reset (WDT) when client connects to AP mode
-- Fix unstable AP activation sequence
-- Fix blocking delays during WiFi operations
+- ESP32 reset (WDT) when client connects to AP mode
+- Unstable AP activation sequence
+- Blocking delays during WiFi operations
 
 ### Improved
 
-- Improved AP configuration order (config before active)
+- AP configuration order (config before active)
 - Better handling of power instability during AP startup
 - Refactored internal state transitions for STA/AP modes
 
