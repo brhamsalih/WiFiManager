@@ -18,5 +18,5 @@ classifiers = [
   "Operating System :: OS Independent"
 ]
 
-[tool.setuptools]
-packages = ["wifiManager"]
+[tool.setuptools.packages.find]
+where = ["."]
