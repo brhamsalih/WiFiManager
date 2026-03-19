@@ -10,6 +10,10 @@ dist/
 build/
 \*.egg-info/
 
+dist/
+build/
+\*.egg-info/
+
 # OS
 
 .DS_Store

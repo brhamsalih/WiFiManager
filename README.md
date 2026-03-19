@@ -1,3 +1,6 @@
+![PyPI version](https://img.shields.io/pypi/v/esp32-wifimanager)
+![License](https://img.shields.io/pypi/l/esp32-wifimanager)
+
 # WiFiManager (MicroPython – ESP32)
 
 A smart and flexible Wi-Fi manager for ESP32 using MicroPython.
