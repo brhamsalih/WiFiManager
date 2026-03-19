@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "esp32-wifimanager"
-version = "1.0.2"
+version = "2.0.0"
 description = "WiFi Manager for ESP32 running MicroPython"
 readme = "README.md"
 license = { text = "MIT" }
