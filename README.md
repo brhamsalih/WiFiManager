@@ -1,121 +1,205 @@
 # WiFiManager (MicroPython – ESP32)
 
-Smart Wi-Fi manager for ESP32 using MicroPython.
-Auto-connect, scan, JSON storage, and AP fallback.
+A smart and flexible Wi-Fi manager for ESP32 using MicroPython.
+Supports auto-connect, AP fallback, JSON-based configuration, and dynamic network management.
 
-# Requirements
+---
 
-- ESP32 board
-- MicroPython (v1.20 or later preferred)
-- Storage space for the configuration file (wifi.json)
+## 🚀 Features
 
-## Installation
+- Auto-connect to strongest saved network
+- Fallback to Access Point (AP) mode
+- JSON-based configuration (networks + AP settings)
+- Quick connect to new networks
+- Dynamic AP configuration
+- Network scanning
+- Lightweight and optimized for MicroPython
+
+---
+
+## 📦 Installation
 
 ```bash
 pip install esp32-wifimanager
 ```
 
-# Installation (via Thonny)
+### Or manually:
 
-- Copy the entire wifiManager/ folder to the ESP32
-- (Optional) Create a wifi.json file in the root directory
-- The library is ready to use ✅
+- Copy `wifiManager/` folder to ESP32
+- Create `wifi.json` file (optional)
 
-# Settings file (wifi.json)
+---
 
-```bash
+## ⚙️ Configuration File (wifi.json)
+
+```json
 {
-  "networks": [
-    { "ssid": "Home", "password": "12345678" },
-    { "ssid": "Office", "password": "87654321" }
-  ]
+  "networks": [{ "ssid": "Home", "password": "12345678" }],
+  "AP": {
+    "essid": "ESP32_AP",
+    "password": "12345678",
+    "channel": 6
+  }
 }
 ```
 
-# How it Works
+---
 
-- Scan nearby networks
-- Compare available networks with saved networks
-- Select the network with the strongest signal
-- Attempt to connect automatically
-- If this fails → Turn on the Access Point
+## ⚡ Quick Start
 
-# Quick use
-
-```bash
+```python
 from wifiManager import WiFiManager
 
 wifi = WiFiManager(debug=True)
-```
-
-# Automatic connection Start STA if faild --> AP
-
-```bash
 print(wifi.connect())
 ```
 
-# Start AP
+---
 
-```bash
-print(wifi._ap())
+## 🔌 Connection Flow
+
+1. Scan nearby networks
+2. Match with saved networks
+3. Connect to strongest signal
+4. If failed → Start AP mode
+
+---
+
+## 📡 Quick Connect (New 🔥)
+
+Connect to a network and save it automatically:
+
+```python
+wifi.quick_connect("MyWiFi", "12345678")
 ```
 
-# Check is connecting
+---
 
-```bash
-print(wifi.is_connected())
+## 📊 Status APIs
+
+### STA Status
+
+```python
+wifi.status_sta()
 ```
 
-# Check status
+Output:
 
-```bash
-print(wifi.status())
+```json
+{
+  "status": true,
+  "ssid": "MyWiFi",
+  "ip": "192.168.1.10"
+}
 ```
 
-# Stop AP and STA
+### AP Status
 
-```bash
-print(wifi.stop_all())
+```python
+wifi.status_ap()
 ```
 
-# Stop STA
+---
 
-```bash
-print(wifi.stop_sta())
+## 📡 Access Point Control
+
+### Start AP
+
+```python
+wifi._ap()
 ```
 
-# Stop AP
+### Update AP Settings
 
-```bash
-print(wifi.stop_ap())
+```python
+wifi.update_ap(essid="NEW_AP", password="87654321", channel=11)
 ```
 
-# Add Wi-Fi network
+---
 
-```bash
-print(wifi.add_network("MyWiFi", "11223344"))
+## 📁 Network Management
+
+### Add Network
+
+```python
+wifi.add_network("MyWiFi", "12345678")
 ```
 
-# Delete one network
+### Remove Network
 
-```bash
-print(wifi.remove_network("Office"))
+```python
+wifi.remove_network("MyWiFi")
 ```
 
-# Delete all networks
+### Clear All Networks
 
-```bash
-print(wifi.clear_networks())
+```python
+wifi.clear_networks()
 ```
 
-# Checking nearby networks
+---
 
-```bash
-print(wifi.scanner.scan())
+## ⛔ Stop Interfaces
+
+```python
+wifi.stop_all()
+wifi.stop_sta()
+wifi.stop_ap()
 ```
 
-# Show saved networks
+---
 
-```bash
-print(wifi.storage.load_networks())
+## 📡 Scan Networks
+
+```python
+wifi.scanner.scan()
 ```
+
+---
+
+## ⚠️ Migration Guide (v1 → v2)
+
+### ❌ Old
+
+```python
+wifi = WiFiManager(ap_essid="ESP32", ap_password="12345678")
+wifi.connect()
+```
+
+### ✅ New
+
+```python
+wifi = WiFiManager()
+wifi.connect()
+```
+
+👉 AP settings are now stored in `wifi.json`
+
+---
+
+### ❌ Old Response
+
+```json
+{ "STATUS": "CONNECTED!", "IP": "..." }
+```
+
+### ✅ New Response
+
+```json
+{ "status": true, "ip": "..." }
+```
+
+---
+
+## 🧠 Notes
+
+- AP settings are persistent via JSON
+- `quick_connect()` automatically saves networks
+- Better memory handling and stability
+- Designed for IoT production use
+
+---
+
+## 📜 License
+
+MIT License

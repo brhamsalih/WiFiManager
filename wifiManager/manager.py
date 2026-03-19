@@ -8,21 +8,21 @@ from .storage import Storage
 class WiFiManager():
 
 
-    def __init__(self, config_file="/wifi.json", sta_timeout=10, ap_essid="ESP32_AP", ap_password="12345678", ap_channel=6, ap_max_clients=4, debug=False):
+    def __init__(self, config_file="wifi.json", sta_timeout=5, debug=False, hostname="esp32"):
         self.debug = debug
-        
+        self.storage = Storage(config_file)
         self.sta_timeout = sta_timeout
-        self.ap_essid = ap_essid
-        self.ap_password = ap_password
-        self.ap_channel = ap_channel
-        self.ap_hidden = False
-        self.ap_max_clients = ap_max_clients
+        
+        self.settings = self.storage.load_settings()
+        self.ap_cfg = self.settings.get("AP", {})
+        self.ap_essid = self.ap_cfg.get("essid")
+        self.ap_password = self.ap_cfg.get("password")
+        self.ap_channel = self.ap_cfg.get("channel")
         
         self.wlan = network.WLAN(network.STA_IF)
-        self.ap = network.WLAN(network.AP_IF)
-  
-        self.storage = Storage(config_file)
+        self.hostname = hostname
         self.scanner = WiFiScanner(self.wlan)
+        self.ap = network.WLAN(network.AP_IF)
         
         self.STAT_GOT_IP = 1010
         self.STAT_WRONG_PASSWORD = 1001
@@ -55,27 +55,48 @@ class WiFiManager():
         mode.active(True)
         
     def _ap(self):
-        self._reset(self.ap)
-
-        self.ap.config(
-            essid=self.ap_essid,
-            password=self.ap_password,
-            authmode=network.AUTH_WPA_WPA2_PSK,
-            channel=self.ap_channel,
-            max_clients=self.ap_max_clients 
-        )
-
-        self.ap.active(True)
-        time.sleep(0.5)
-        return {"status": "AP started", "IP": self.ap.ifconfig()[0]}
-
+        if not self.is_ap_connected():
+            self._reset(self.ap)
+            self.ap.config(essid=self.ap_essid, password=self.ap_password, authmode=network.AUTH_WPA_WPA2_PSK)
+            self.ap.config(channel=self.ap_channel)
         
-    
+            time.sleep(0.5)
+            return self.status_ap()
+        
+        return self.status_ap()
 
+
+    def quick_connect(self,ssid, pwd):
+        self._reset(self.wlan)
+        time.sleep(1)
+        self.wlan.config(dhcp_hostname=self.hostname)
+        if self.debug:
+            print("Trying:", ssid)
+        self.wlan.connect(ssid, pwd)
+        start = time.ticks_ms()
+        machine.idle()
+        time.sleep(self.sta_timeout)
+        delta = time.ticks_diff(time.ticks_ms(), start)
+        status = self.wlan.status()
+        if int(delta) >= self.sta_timeout:
+            if status == self.STAT_GOT_IP:
+                self.add_network(ssid, pwd)
+                return self.status_sta()
+            if status == self.STAT_WRONG_PASSWORD:
+                self._reset(self.wlan)
+                self.wlan.active(False)
+                self.connect()
+                return {"status": "WRONG PASSWORD!"}
+            if status == self.STAT_NO_AP_FOUND:
+                self._reset(self.wlan)
+                self.wlan.active(False)
+                self.connect()
+                return {"status": "LAN NOT FOUND"}
+    
     def connect(self):
         self.wlan.active(True)
         time.sleep(1)
-        
+        self.wlan.config(dhcp_hostname=self.hostname)
         if not self.wlan.isconnected():
             if self.debug:
                 print('connecting to network...')
@@ -99,7 +120,7 @@ class WiFiManager():
                 
                 if int(delta) >= self.sta_timeout:
                     if status == self.STAT_GOT_IP:
-                        return{"STATUS": "CONNECTED!","IP": self.wlan.ifconfig()[0]}
+                        return self.status_sta() 
                     
                     if status == self.STAT_WRONG_PASSWORD:
                         self._reset(self.wlan)
@@ -117,7 +138,7 @@ class WiFiManager():
                     return{"TIMEOUT": status}
                 
             
-        return{"STATUS": "CONNECTED!","IP": self.wlan.ifconfig()[0]}
+        return self.status_sta()
     
     # ======================
     # STATUS
@@ -125,34 +146,66 @@ class WiFiManager():
 
     def is_connected(self):
         return self.wlan.isconnected()
-
-    def status(self):
-        if self.wlan.isconnected():
-            return {"MODE": "STA", "IP": self.wlan.ifconfig()}
+    
+    def is_ap_connected(self):
         if self.ap.active():
-            return {"MODE": "AP", "IP": self.ap.ifconfig()}
-        return {"MODE": "OFF"}
+            return True
+        return False
+
+    def status_sta(self):
+        if self.wlan.isconnected():
+            return {"status": True, "ssid": self.wlan.config('essid'), "ip": self.wlan.ifconfig()[0]}
+        return {"status": False}
+    
+    def _format_mac(self, m):
+        return ':'.join('{:02X}'.format(b) for b in m)
+
+    def status_ap(self):
+        if self.ap.active():
+            current_channel = self.ap.config('channel')
+            raw_clients = self.ap.status('stations')
+            clients = [self._format_mac(c[0]) for c in raw_clients]
+
+            ip, mask, gw, dns = self.ap.ifconfig()
+
+            return {
+                "status": True,
+                "ip": ip,
+                "netmask": mask,
+                "gateway": gw,
+                "dns": dns,
+                "clients": len(clients),
+                "channel": current_channel,
+                "mac": clients
+            }
+
+        return {"status": False}
+
     
     # ======================
     # Utilities
     # ======================
+    def update_ap(self,essid=None, password=None, channel=None):
+        edit = self.storage.update_ap_settings(essid=essid, password=password, channel=channel)
+        return edit
     def add_network(self, ssid, password):
         self.storage.save_network(ssid, password)
-        return "OK"
+        return True
     def remove_network(self, ssid):
-        self.storage.remove_network(ssid)
-        return "OK"
+        remove_network = self.storage.remove_network(ssid)
+        return remove_network
     def clear_networks(self):
-        self.storage.clear()
-        return "OK"
+        clear_networks = self.storage.clear()
+        return clear_networks
     def stop_all(self):
         self.wlan.active(False)
         self.ap.active(False)
-        return "OK"
+        return True
     def stop_sta(self):
         self.wlan.active(False)
-        return "OK"
+        return True
     def stop_ap(self):
         self.ap.active(False)
-        return "OK"
+        return True
         
+
